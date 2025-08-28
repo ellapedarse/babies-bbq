@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -58,6 +60,7 @@ const Navbar = () => {
           {/* CTA Button */}
           <div className="hidden md:block">
             <Button 
+              onClick={() => navigate('/order')}
               className={`transition-all duration-300 hover:scale-105 ${
                 isScrolled
                   ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/25'
@@ -98,6 +101,7 @@ const Navbar = () => {
                 </a>
               ))}
               <Button 
+                onClick={() => navigate('/order')}
                 className={`w-fit transition-all duration-300 ${
                   isScrolled
                     ? 'bg-orange-600 hover:bg-orange-700 text-white'
