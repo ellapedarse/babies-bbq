@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import { Badge } from '@/components/ui/badge';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { state } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -57,8 +60,8 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* CTA Button and Icons */}
+          <div className="hidden md:flex items-center space-x-4">
             <Button 
               onClick={() => navigate('/order')}
               className={`transition-all duration-300 hover:scale-105 ${
@@ -68,6 +71,37 @@ const Navbar = () => {
               }`}
             >
               Order Now
+            </Button>
+            
+            {/* Cart Icon with Count */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`relative ${
+                  isScrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-white/80'
+                }`}
+                onClick={() => navigate('/order')}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {state.totalItems > 0 && (
+                  <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs">
+                    {state.totalItems}
+                  </Badge>
+                )}
+              </Button>
+            </div>
+
+            {/* Profile Icon */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`relative ${
+                isScrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-white/80'
+              }`}
+              onClick={() => navigate('/profile')}
+            >
+              <User className="w-5 h-5" />
             </Button>
           </div>
 

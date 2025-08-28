@@ -1,11 +1,16 @@
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/contexts/CartContext';
+import { useState } from 'react';
 import porkBBQ from '@/assets/pork-bbq.jpg';
 import chickenBBQ from '@/assets/chicken-bbq.jpg';
 import fishBBQ from '@/assets/fish-bbq.jpg';
 import beefBBQ from '@/assets/beef-bbq.jpg';
 
 const Products = () => {
+  const { dispatch } = useCart();
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
   const products = [
     {
       id: 1,
@@ -99,6 +104,32 @@ const Products = () => {
     }
   ];
 
+  const updateQuantity = (productId: number, newQuantity: number) => {
+    if (newQuantity < 0) return;
+    setQuantities(prev => ({
+      ...prev,
+      [productId]: newQuantity
+    }));
+  };
+
+  const addToCart = (product: any) => {
+    const quantity = quantities[product.id] || 1;
+    if (quantity > 0) {
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: {
+          ...product,
+          quantity
+        }
+      });
+      // Reset quantity after adding to cart
+      setQuantities(prev => ({
+        ...prev,
+        [product.id]: 1
+      }));
+    }
+  };
+
   return (
     <section id="products" className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -144,16 +175,6 @@ const Products = () => {
                     {product.rating}
                   </span>
                 </div>
-
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-gradient-overlay opacity-0 group-hover:opacity-60 transition-opacity duration-300 flex items-center justify-center">
-                  <Button
-                    size="sm"
-                    className="bg-brand-white text-primary-red hover:bg-brand-white/90 transform scale-95 group-hover:scale-100 transition-transform duration-300"
-                  >
-                    Quick Add
-                  </Button>
-                </div>
               </div>
 
               {/* Product Info */}
@@ -165,12 +186,36 @@ const Products = () => {
                   {product.description}
                 </p>
                 
+                {/* Quantity Selector */}
+                <div className="flex items-center justify-center mb-4 space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => updateQuantity(product.id, (quantities[product.id] || 1) - 1)}
+                    className="w-8 h-8 p-0 rounded-full"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </Button>
+                  <span className="text-lg font-semibold text-foreground min-w-[2rem] text-center">
+                    {quantities[product.id] || 1}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => updateQuantity(product.id, (quantities[product.id] || 1) + 1)}
+                    className="w-8 h-8 p-0 rounded-full"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </div>
+                
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-primary-red">
                     {product.price}
                   </span>
                   <Button
                     size="sm"
+                    onClick={() => addToCart(product)}
                     className="bg-gradient-button hover:opacity-90 transition-opacity"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
