@@ -320,7 +320,7 @@ const Order = () => {
                 {/* Checkout Button */}
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground py-3 text-lg font-semibold"
-                  onClick={() => alert('Checkout functionality coming soon!')}
+                  onClick={() => navigate('/checkout')}
                   disabled={getTotalPrice() < 200}
                 >
                   {getTotalPrice() < 200 ? 'Minimum Order ₱200' : 'Proceed to Checkout'}
