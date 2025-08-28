@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingCart, User } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { Badge } from '@/components/ui/badge';
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const { state } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,7 +28,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
       isScrolled 
-        ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-white/20 py-3' 
+        ? 'bg-brand-white/80 backdrop-blur-xl shadow-large border-b border-primary-red/20 py-3' 
         : 'bg-transparent py-6'
     }`}>
       <div className="container mx-auto px-6">
@@ -37,7 +36,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className={`text-2xl font-bold transition-all duration-300 ${
-              isScrolled ? 'text-gray-900' : 'text-white drop-shadow-lg'
+              isScrolled ? 'text-primary-red' : 'text-brand-white drop-shadow-lg'
             }`}>
               Babies BBQ
             </div>
@@ -51,8 +50,8 @@ const Navbar = () => {
                 href={link.href}
                 className={`font-medium transition-all duration-300 hover:scale-105 ${
                   isScrolled 
-                    ? 'text-gray-700 hover:text-gray-900' 
-                    : 'text-white/90 hover:text-white drop-shadow-sm'
+                    ? 'text-brand-brown hover:text-primary-red' 
+                    : 'text-brand-white/90 hover:text-brand-white drop-shadow-sm'
                 }`}
               >
                 {link.name}
@@ -60,7 +59,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Cart and Profile Icons */}
+          {/* Cart, Profile, and Admin Icons */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Cart Icon with Count */}
             <div className="relative">
@@ -68,13 +67,12 @@ const Navbar = () => {
                 variant="ghost"
                 size="sm"
                 className={`relative ${
-                  isScrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-white/80'
+                  isScrolled ? 'text-brand-brown hover:text-primary-red' : 'text-brand-white hover:text-brand-white/80'
                 }`}
-                onClick={() => navigate('/order')}
               >
                 <ShoppingCart className="w-5 h-5" />
                 {state.totalItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs">
+                  <Badge className="absolute -top-2 -right-2 bg-primary-red text-brand-white text-xs">
                     {state.totalItems}
                   </Badge>
                   )}
@@ -86,18 +84,31 @@ const Navbar = () => {
               variant="ghost"
               size="sm"
               className={`relative ${
-                isScrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-white/80'
+                isScrolled ? 'text-brand-brown hover:text-primary-red' : 'text-brand-white hover:text-brand-white/80'
               }`}
-              onClick={() => navigate('/profile')}
             >
               <User className="w-5 h-5" />
             </Button>
+
+            {/* Admin Access */}
+            <Link href="/admin/login">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`relative ${
+                  isScrolled ? 'text-brand-brown hover:text-primary-red' : 'text-brand-white hover:text-brand-white/80'
+                }`}
+                title="Admin Access"
+              >
+                <Settings className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             className={`md:hidden transition-colors duration-300 ${
-              isScrolled ? 'text-gray-900' : 'text-white'
+              isScrolled ? 'text-primary-red' : 'text-brand-white'
             }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -108,7 +119,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className={`md:hidden mt-4 pb-4 border-t transition-all duration-300 ${
-            isScrolled ? 'border-gray-200' : 'border-white/20'
+            isScrolled ? 'border-primary-red/20' : 'border-brand-white/20'
           }`}>
             <div className="flex flex-col space-y-4 pt-4">
               {navLinks.map((link) => (
@@ -116,13 +127,24 @@ const Navbar = () => {
                   key={link.name}
                   href={link.href}
                   className={`font-medium transition-colors duration-200 ${
-                    isScrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white/90 hover:text-white'
+                    isScrolled ? 'text-brand-brown hover:text-primary-red' : 'text-brand-white/90 hover:text-brand-white'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
+              
+              {/* Admin Access in Mobile Menu */}
+              <Link 
+                href="/admin/login"
+                className={`font-medium transition-colors duration-200 ${
+                  isScrolled ? 'text-brand-brown hover:text-primary-red' : 'text-brand-white/90 hover:text-brand-white'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Admin Access
+              </Link>
             </div>
           </div>
         )}

@@ -112,7 +112,7 @@ const Products = () => {
     }));
   };
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: CartItem) => {
     const quantity = quantities[product.id] || 1;
     if (quantity > 0) {
       dispatch({
@@ -154,7 +154,7 @@ const Products = () => {
               {/* Product Image */}
               <div className="relative aspect-square overflow-hidden">
                 <img
-                  src={product.image}
+                  src={product.image.src}
                   alt={product.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />

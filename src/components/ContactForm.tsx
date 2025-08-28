@@ -69,7 +69,7 @@ const ContactForm = () => {
             Get in Touch
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Have questions or special requests? We'd love to hear from you!
+            Have questions or special requests? We&apos;d love to hear from you!
           </p>
         </div>
 

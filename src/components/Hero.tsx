@@ -80,7 +80,7 @@ const Hero = () => {
               >
                 <div className="aspect-[4/3] relative">
                   <img
-                    src={branch.image}
+                    src={branch.image.src}
                     alt={branch.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
