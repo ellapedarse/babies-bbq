@@ -23,13 +23,13 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'glass-effect py-3' : 'bg-transparent py-6'
+      isScrolled ? 'bg-primary/95 backdrop-blur-md py-3' : 'bg-primary py-4'
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="text-2xl font-bold text-primary-red">
+            <div className="text-2xl font-bold text-primary-foreground">
               Babies BBQ
             </div>
           </div>
@@ -40,7 +40,7 @@ const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-foreground hover:text-primary-red transition-colors duration-200 font-medium"
+                className="text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200 font-medium"
               >
                 {link.name}
               </a>
@@ -50,8 +50,8 @@ const Navbar = () => {
           {/* CTA Button */}
           <div className="hidden md:block">
             <Button 
-              variant="default" 
-              className="bg-gradient-button hover:opacity-90 transition-opacity"
+              variant="secondary"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 transition-all duration-200 font-semibold"
             >
               Order Now
             </Button>
@@ -59,7 +59,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-foreground hover:text-primary-red transition-colors"
+            className="md:hidden text-primary-foreground hover:text-primary-foreground/80 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -68,21 +68,21 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden mt-4 pb-4 border-t border-primary-foreground/20">
+            <div className="flex flex-col space-y-4 pt-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-foreground hover:text-primary-red transition-colors duration-200 font-medium"
+                  className="text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200 font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
               <Button 
-                variant="default" 
-                className="bg-gradient-button hover:opacity-90 transition-opacity w-fit"
+                variant="secondary"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 transition-all duration-200 font-semibold w-fit"
               >
                 Order Now
               </Button>
