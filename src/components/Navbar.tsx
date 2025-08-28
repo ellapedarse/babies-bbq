@@ -60,19 +60,8 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button and Icons */}
+          {/* Cart and Profile Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              onClick={() => navigate('/order')}
-              className={`transition-all duration-300 hover:scale-105 ${
-                isScrolled
-                  ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/25'
-                  : 'bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30'
-              }`}
-            >
-              Order Now
-            </Button>
-            
             {/* Cart Icon with Count */}
             <div className="relative">
               <Button
@@ -88,7 +77,7 @@ const Navbar = () => {
                   <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs">
                     {state.totalItems}
                   </Badge>
-                )}
+                  )}
               </Button>
             </div>
 
@@ -134,16 +123,6 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
-              <Button 
-                onClick={() => navigate('/order')}
-                className={`w-fit transition-all duration-300 ${
-                  isScrolled
-                    ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                    : 'bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30'
-                }`}
-              >
-                Order Now
-              </Button>
             </div>
           </div>
         )}

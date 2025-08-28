@@ -1,12 +1,17 @@
-import { Plus, Minus, ArrowLeft, Trash2 } from 'lucide-react';
+import { Plus, Minus, ArrowLeft, Trash2, Clock, MapPin, Info, Gift, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useState } from 'react';
 
 const Order = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useCart();
+  const [orderNotes, setOrderNotes] = useState('');
+  const [deliveryOption, setDeliveryOption] = useState('pickup');
+  const [promoCode, setPromoCode] = useState('');
 
   const updateQuantity = (itemId: number, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -26,6 +31,24 @@ const Order = () => {
       return total + (price * item.quantity);
     }, 0);
   };
+
+  const getEstimatedPickupTime = () => {
+    const totalItems = state.totalItems;
+    if (totalItems <= 5) return '15-20 minutes';
+    if (totalItems <= 15) return '25-35 minutes';
+    if (totalItems <= 30) return '40-50 minutes';
+    return '1 hour+';
+  };
+
+  const getMinimumOrderMessage = () => {
+    const total = getTotalPrice();
+    if (total < 200) {
+      return `Minimum order is ₱200. Add ₱${200 - total} more to proceed.`;
+    }
+    return null;
+  };
+
+  const minimumOrderMessage = getMinimumOrderMessage();
 
   if (state.items.length === 0) {
     return (
@@ -93,6 +116,26 @@ const Order = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</div>
+              <span className="text-sm font-medium">Cart</span>
+            </div>
+            <div className="w-16 h-1 bg-muted rounded-full"></div>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-bold">2</div>
+              <span className="text-sm text-muted-foreground">Checkout</span>
+            </div>
+            <div className="w-16 h-1 bg-muted rounded-full"></div>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-bold">3</div>
+              <span className="text-sm text-muted-foreground">Confirmation</span>
+            </div>
+          </div>
+        </div>
+
         {/* Cart Items */}
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items List */}
@@ -158,48 +201,141 @@ const Order = () => {
                 </Card>
               ))}
             </div>
+
+            {/* Order Notes */}
+            <Card className="mt-6 p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2 text-primary" />
+                Special Instructions
+              </h3>
+              <Textarea
+                placeholder="Any special requests, allergies, or cooking preferences? (Optional)"
+                value={orderNotes}
+                onChange={(e) => setOrderNotes(e.target.value)}
+                className="min-h-[80px]"
+              />
+            </Card>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-24 p-6">
-              <h3 className="text-xl font-bold text-foreground mb-4">Order Summary</h3>
-              
-              {/* Items Count */}
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
-                  <span>Items ({state.totalItems}):</span>
-                  <span className="font-medium">₱{getTotalPrice()}</span>
+            <div className="space-y-6">
+              {/* Delivery Options */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <MapPin className="w-5 h-5 mr-2 text-primary" />
+                  Pickup Options
+                </h3>
+                <div className="space-y-3">
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="pickup"
+                      checked={deliveryOption === 'pickup'}
+                      onChange={(e) => setDeliveryOption(e.target.value)}
+                      className="text-primary"
+                    />
+                    <span className="text-sm">Pickup at Restaurant</span>
+                  </label>
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="curbside"
+                      checked={deliveryOption === 'curbside'}
+                      onChange={(e) => setDeliveryOption(e.target.value)}
+                      className="text-primary"
+                    />
+                    <span className="text-sm">Curbside Pickup</span>
+                  </label>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Service Fee:</span>
-                  <span className="font-medium">₱0</span>
+              </Card>
+
+              {/* Estimated Pickup Time */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-accent" />
+                  Estimated Pickup Time
+                </h3>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent mb-2">
+                    {getEstimatedPickupTime()}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Based on {state.totalItems} items
+                  </p>
                 </div>
-                <div className="border-t pt-3">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total:</span>
-                    <span className="text-primary">₱{getTotalPrice()}</span>
+              </Card>
+
+              {/* Promo Code */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <Tag className="w-5 h-5 mr-2 text-primary" />
+                  Promo Code
+                </h3>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Enter promo code"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className="flex-1 p-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <Button variant="outline" size="sm">
+                    Apply
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Order Summary */}
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">Order Summary</h3>
+                
+                {/* Items Count */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span>Items ({state.totalItems}):</span>
+                    <span className="font-medium">₱{getTotalPrice()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Service Fee:</span>
+                    <span className="font-medium">₱0</span>
+                  </div>
+                  <div className="border-t pt-3">
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total:</span>
+                      <span className="text-primary">₱{getTotalPrice()}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Checkout Button */}
-              <Button 
-                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground py-3 text-lg font-semibold"
-                onClick={() => alert('Checkout functionality coming soon!')}
-              >
-                Proceed to Checkout
-              </Button>
+                {/* Minimum Order Warning */}
+                {minimumOrderMessage && (
+                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">{minimumOrderMessage}</p>
+                  </div>
+                )}
 
-              {/* Continue Shopping */}
-              <Button 
-                variant="outline"
-                className="w-full mt-3"
-                onClick={() => navigate('/')}
-              >
-                Continue Shopping
-              </Button>
-            </Card>
+                {/* Checkout Button */}
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground py-3 text-lg font-semibold"
+                  onClick={() => alert('Checkout functionality coming soon!')}
+                  disabled={getTotalPrice() < 200}
+                >
+                  {getTotalPrice() < 200 ? 'Minimum Order ₱200' : 'Proceed to Checkout'}
+                </Button>
+
+                {/* Continue Shopping */}
+                <Button 
+                  variant="outline"
+                  className="w-full mt-3"
+                  onClick={() => navigate('/')}
+                >
+                  Continue Shopping
+                </Button>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
